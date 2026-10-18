@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-paper text-ink antialiased;
+}
+
+.container-page {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition;
+}
+.btn-primary {
+  @apply btn bg-komla text-white hover:bg-komla-dark;
+}
+.btn-ghost {
+  @apply btn border border-line bg-white hover:border-ink;
+}
+.chip {
+  @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5 text-sm transition hover:border-ink;
+}
+.chip-on {
+  @apply border-ink bg-ink text-white hover:border-ink;
+}

@@ -1,0 +1,39 @@
+name: Refresh catalogue
+
+# Re-scrapes every brand twice a day: 06:00 and 18:00 Dhaka time (00:00 / 12:00 UTC).
+on:
+  schedule:
+    - cron: "0 0,12 * * *"
+  workflow_dispatch:
+    inputs:
+      brand:
+        description: "Only these brands (comma-separated slugs, blank for all)"
+        required: false
+
+concurrency:
+  group: refresh-catalogue
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --omit=dev
+      - name: Scrape
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+          SCRAPER_CONTACT: ${{ vars.SCRAPER_CONTACT }}
+          ONLY_BRANDS: ${{ github.event.inputs.brand }}
+        run: |
+          if [ -n "$ONLY_BRANDS" ]; then
+            node scripts/scrape.js --brand "$ONLY_BRANDS"
+          else
+            node scripts/scrape.js
+          fi
