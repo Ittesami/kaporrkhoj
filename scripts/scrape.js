@@ -3,7 +3,13 @@
 //   npm run scrape:brand yellow    -> one brand (comma-separate for several)
 import mongoose from "mongoose";
 import { connectDB } from "../lib/db.js";
+import { SCRAPING_ENABLED } from "../lib/brands.js";
 import { runScrape } from "../scraper/run.js";
+
+if (!SCRAPING_ENABLED) {
+  console.log("Scraping is paused (SCRAPING_ENABLED = false in lib/brands.js). Nothing fetched.");
+  process.exit(0);
+}
 
 const i = process.argv.indexOf("--brand");
 const only = i >= 0 && process.argv[i + 1] ? process.argv[i + 1].split(",") : null;

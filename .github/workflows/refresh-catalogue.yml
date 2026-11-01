@@ -1,9 +1,11 @@
 name: Refresh catalogue
 
 # Re-scrapes every brand twice a day: 06:00 and 18:00 Dhaka time (00:00 / 12:00 UTC).
+# PAUSED: the schedule is commented out and SCRAPING_ENABLED is false in
+# lib/brands.js. To resume, uncomment the two schedule lines and set it to true.
 on:
-  schedule:
-    - cron: "0 0,12 * * *"
+  # schedule:
+  #   - cron: "0 0,12 * * *"
   workflow_dispatch:
     inputs:
       brand:

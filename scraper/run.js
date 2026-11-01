@@ -1,6 +1,6 @@
 // Refreshes every brand's catalogue. Run by scripts/scrape.js (locally or on
 // the 12-hourly GitHub Actions schedule).
-import { BRANDS } from "../lib/brands.js";
+import { BRANDS, SCRAPING_ENABLED } from "../lib/brands.js";
 import { Product, ScrapeRun } from "../lib/models.js";
 import { fetchShopify } from "./adapters/shopify.js";
 import { fetchWooCommerce } from "./adapters/woocommerce.js";
@@ -84,6 +84,10 @@ async function scrapeBrand(brand, log) {
 }
 
 export async function runScrape({ only, trigger = "manual", log = console.log } = {}) {
+  if (!SCRAPING_ENABLED) {
+    log("Scraping is paused (SCRAPING_ENABLED = false in lib/brands.js). Nothing fetched.");
+    return [];
+  }
   const brands = only ? BRANDS.filter((b) => only.includes(b.slug)) : BRANDS;
   const run = await ScrapeRun.create({ startedAt: new Date(), trigger, brands: [] });
   // Brands run in parallel (different hosts); requests to one host stay sequential and spaced out.
